@@ -87,6 +87,6 @@ aws ec2 associate-address --instance-id ${INSTANCE_ID} --allocation-id ${ALLOCAT
 RV=$?
 
 if [[ ${RV} != 0 ]]; then
-    $LOGGER "ERROR: Unable to associate elastic IP ${elasticip_id} to instance ${instance_id}"
+    $LOGGER "ERROR: Unable to associate elastic IP ${ALLOCATION_ID} to instance ${INSTANCE_ID}"
     exit 1
 fi
