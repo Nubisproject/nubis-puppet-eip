@@ -88,5 +88,8 @@ RV=$?
 
 if [[ ${RV} != 0 ]]; then
     $LOGGER "ERROR: Unable to associate elastic IP ${ALLOCATION_ID} to instance ${INSTANCE_ID}"
-    exit 1
+    exit ${RV}
+else
+    # We assume that if return value is not 0 then we have successfully associated an EIP
+    $LOGGER "SUCCESS: Associated ${ALLOCATION_IP} to instance ${INSTANCE_ID}"
 fi
