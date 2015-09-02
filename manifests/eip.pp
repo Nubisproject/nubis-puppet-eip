@@ -9,19 +9,20 @@ class nubis::eip (
     }
 
     if $ensure == 'present' {
-        $directory_ensure   = 'directory'
         $file_ensure        = 'file'
-    }
-    else {
-        $directory_ensure   = 'absent'
+    } else {
         $file_enure         = 'absent'
     }
 
-    if $auto {
-        file { '/etc/nubis.d/eip-associate':
-            ensure  => link,
-            target  => '/usr/local/sbin/eip-associate',
-        }
+    if $auto == true {
+        $link_ensure        = 'present'
+    } else {
+        $link_ensure        = 'absent'
+    }
+
+    file { '/etc/nubis.d/eip-associate':
+        ensure  => $link_ensure,
+        target  => '/usr/local/sbin/eip-associate',
     }
 
     file { '/usr/local/sbin/eip-associate':
