@@ -1,5 +1,5 @@
 
-class nubis::eip (
+class nubis_eip::eip (
     $ensure     = present,
     $auto       = true
 ){
