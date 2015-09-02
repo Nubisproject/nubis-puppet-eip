@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # This script runs on every bootup, and does the following:
 #
 # - Waits for consul to be up and running
@@ -19,6 +19,11 @@ fi
 
 # Source the consul connection details from the metadata api
 eval `curl -s -fq http://169.254.169.254/latest/user-data`
+
+# Get our instance id, local ipv4 address, and region
+INSTANCE_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/instance-id)
+LOCAL_IP=$(curl -s -fq http://169.254.169.254/latest/meta-data/local-ipv4)
+EC2_REGION=$(curl -s -fq http://169.254.169.254/latest/dynamic/instance-identity/document | jq '.region' -r)
 
 # Set up the consul url
 CONSUL="http://localhost:8500/v1/kv/${NUBIS_STACK}/${NUBIS_ENVIRONMENT}/config"
@@ -57,10 +62,17 @@ while [ "$KEYS_UP" != "0" ]; do
         $LOGGER "ERROR: Timeout while waiting for keys to be populated in consul."
         exit 1
     fi
+
+    # Query Consul for ElasticIP
     QUERY=$(curl -s $CONSUL/ElasticIP?raw=1)
 
+    # If we didn't find our elasticip in Consul, look for it in our CloudFormation stack outputs
     if [ "$QUERY" == "" ]; then
-        $LOGGER "Keys not ready yet. Sleeping 30 seconds before retrying..."
+      QUERY=$(aws --region $EC2_REGION --output json cloudformation describe-stacks --stack-name $NUBIS_STACK | jq --raw-output '.Stacks[] | .Outputs[] | select(.OutputKey == "ElasticIP") | .OutputValue')
+    fi
+
+    if [ "$QUERY" == "" ]; then
+        $LOGGER "Keys not ready yet, and ElasticIP not found in ${STACK_NAME:-}. Sleeping 30 seconds before retrying..."
         sleep 30
         COUNT=${COUNT}+1
     else
@@ -68,20 +80,12 @@ while [ "$KEYS_UP" != "0" ]; do
     fi
 done
 
-ALLOCATION_ID=$(curl -s $CONSUL/ElasticIP?raw=1)
-INSTANCE_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/instance-id)
-LOCAL_IP=$(curl -s -fq http://169.254.169.254/latest/meta-data/local-ipv4)
-EC2_REGION=$(curl -s -fq http://169.254.169.254/latest/dynamic/instance-identity/document | jq '.region' -r)
-
-# If we didn't find our elasticip in Consul, look for it in our CloudFormation stack outputs
-if [ -z "${ALLOCATION_ID}" ]; then
-  ALLOCATION_ID = $(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[].Outputs[?OutputKey == ElasticIP].OutputValue' --output text)
-fi
-
-if [[ -z "${ALLOCATION_ID}" ]]; then
-    $LOGGER "ERROR: Instance ID not found"
+if [[ -z "${QUERY}" ]]; then
+    $LOGGER "ERROR: ElasticIP not found"
     exit 1
 fi
+
+ALLOCATION_ID=$QUERY
 
 aws ec2 associate-address --instance-id ${INSTANCE_ID} --allocation-id ${ALLOCATION_ID} --private-ip-address ${LOCAL_IP} --region ${EC2_REGION}
 RV=$?
@@ -91,5 +95,5 @@ if [[ ${RV} != 0 ]]; then
     exit ${RV}
 else
     # We assume that if return value is not 0 then we have successfully associated an EIP
-    $LOGGER "SUCCESS: Associated ${ALLOCATION_IP} to instance ${INSTANCE_ID}"
+    $LOGGER "SUCCESS: Associated ${ALLOCATION_ID} to instance ${INSTANCE_ID}"
 fi
