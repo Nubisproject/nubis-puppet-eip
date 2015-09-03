@@ -6,5 +6,6 @@
   "license": "MPL-2.0",
   "source": "https://github.com/Nubisproject/nubis-puppet-eip",
   "project_page": "https://github.com/Nubisproject/nubis-puppet-eip",
-  "issues_url": "https://github.com/Nubisproject/nubis-puppet-eip/issues"
+  "issues_url": "https://github.com/Nubisproject/nubis-puppet-eip/issues",
+  "dependencies": []
 }
