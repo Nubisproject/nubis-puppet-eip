@@ -15,7 +15,7 @@ class nubis_eip::eip (
     }
 
     if $auto == true {
-        $link_ensure        = 'present'
+        $link_ensure        = 'link'
     } else {
         $link_ensure        = 'absent'
     }
