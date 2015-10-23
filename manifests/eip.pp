@@ -17,7 +17,7 @@ class nubis_eip::eip (
 
     if $auto {
         file { "/etc/nubis.d/${order}-eip-associate":
-            ensure  => $link_ensure,
+            ensure  => link,
             target  => '/usr/local/sbin/eip-associate',
             require => File['/usr/local/sbin/eip-associate']
         }
