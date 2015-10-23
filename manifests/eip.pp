@@ -15,15 +15,12 @@ class nubis_eip::eip (
         $file_enure         = 'absent'
     }
 
-    if $auto == true {
-        $link_ensure        = 'link'
-    } else {
-        $link_ensure        = 'absent'
-    }
-
-    file { "/etc/nubis.d/${order}-eip-associate":
-        ensure  => $link_ensure,
-        target  => '/usr/local/sbin/eip-associate',
+    if $auto {
+        file { "/etc/nubis.d/${order}-eip-associate":
+            ensure  => link,
+            target  => '/usr/local/sbin/eip-associate',
+            require => File['/usr/local/sbin/eip-associate']
+        }
     }
 
     file { '/usr/local/sbin/eip-associate':
