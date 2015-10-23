@@ -75,13 +75,13 @@ if [[ -z "${INSTANCE_ID}" ]]; then
     exit 1
 fi
 
-aws ec2 associate-address --instance-id ${INSTANCE_ID} --allocation-id ${ALLOCATION_ID} --private-ip-address ${LOCAL_IP} --region ${EC2_REGION}
+aws ec2 associate-address --instance-id ${INSTANCE_ID} --allocation-id ${ELASTICIP_ID} --private-ip-address ${LOCAL_IP} --region ${EC2_REGION}
 RV=$?
 
 if [[ ${RV} != 0 ]]; then
-    $LOGGER "ERROR: Unable to associate elastic IP ${ALLOCATION_ID} to instance ${INSTANCE_ID}"
+    $LOGGER "ERROR: Unable to associate elastic IP ${ELASTICIP_ID} to instance ${INSTANCE_ID}"
     exit ${RV}
 else
     # We assume that if return value is not 0 then we have successfully associated an EIP
-    $LOGGER "SUCCESS: Associated ${ALLOCATION_IP} to instance ${INSTANCE_ID}"
+    $LOGGER "SUCCESS: Associated ${ELASTICIP_ID} to instance ${INSTANCE_ID}"
 fi
