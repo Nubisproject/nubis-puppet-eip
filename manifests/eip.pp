@@ -1,7 +1,8 @@
 
 class nubis_eip::eip (
     $ensure     = present,
-    $auto       = true
+    $auto       = true,
+    $order      = '99'
 ){
 
     if ! ($ensure in ['present', 'absent']) {
@@ -20,7 +21,7 @@ class nubis_eip::eip (
         $link_ensure        = 'absent'
     }
 
-    file { '/etc/nubis.d/eip-associate':
+    file { "/etc/nubis.d/${order}-eip-associate":
         ensure  => $link_ensure,
         target  => '/usr/local/sbin/eip-associate',
     }
