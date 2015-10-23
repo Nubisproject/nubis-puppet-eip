@@ -34,7 +34,7 @@ if [[ -z "${ELASTICIP_ID}" ]]; then
     # Is it up yet? Otherwise wait until the stack is done
     until [ ! -z "${ELASTICIP_ID}" ]; do
         $LOGGER "Waiting on Elastic IP to be ready"
-        ELASTICIP_ID=$(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $NUBIS_STACK --query "Stacks[].Outputs[?OutputKey=='ElasticIP'].OutputValue" --output text)
+        ELASTICIP_ID=$(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $NUBIS_STACK --query "Stacks[].Outputs[?OutputKey=='EIPAllocationID'].OutputValue" --output text)
         sleep 10
     done
 
