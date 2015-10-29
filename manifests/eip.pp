@@ -1,8 +1,9 @@
 
 class nubis_eip::eip (
-    $ensure     = present,
-    $auto       = true,
-    $order      = '99'
+    $ensure             = present,
+    $auto               = true,
+    $order              = '99',
+    $cfn_eip_output_key = 'EIPAllocationID',
 ){
 
     if ! ($ensure in ['present', 'absent']) {
@@ -28,6 +29,6 @@ class nubis_eip::eip (
         owner   => root,
         group   => root,
         mode    => '0755',
-        source  => 'puppet:///modules/nubis_eip/eip-associate',
+        content => template('nubis_eip/eip-associate.erb'),
     }
 }
