@@ -4,6 +4,7 @@ class nubis_eip::eip (
     $auto               = true,
     $order              = '99',
     $cfn_eip_output_key = 'EIPAllocationID',
+    $eip_interface      = 'eth0',
 ){
 
     if ! ($ensure in ['present', 'absent']) {

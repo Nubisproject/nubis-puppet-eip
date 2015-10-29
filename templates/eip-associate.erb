@@ -22,8 +22,12 @@ eval `curl -s -fq http://169.254.169.254/latest/user-data`
 
 # Setup variables
 INSTANCE_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/instance-id)
-LOCAL_IP=$(curl -s -fq http://169.254.169.254/latest/meta-data/local-ipv4)
 EC2_REGION=$(curl -s -fq http://169.254.169.254/latest/dynamic/instance-identity/document | jq '.region' -r)
+
+# Network info
+EIP_INTERFACE="<%= @eip_interface %>"
+ETH_MAC=$(cat /sys/class/net/${EIP_INTERFACE}/address)
+ENI_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/network/interfaces/macs/${ETH_MAC}/interface-id)
 
 # First, check with CloudFormation to see if we can find our IP
 if [[ -z "${ELASTICIP_ID}" ]]; then
@@ -41,13 +45,13 @@ if [[ -z "${INSTANCE_ID}" ]]; then
     exit 1
 fi
 
-aws ec2 associate-address --instance-id ${INSTANCE_ID} --allocation-id ${ELASTICIP_ID} --private-ip-address ${LOCAL_IP} --region ${EC2_REGION}
+aws ec2 associate-address --network-interface-id ${ENI_ID} --allocation-id ${ELASTICIP_ID} --region ${EC2_REGION}
 RV=$?
 
 if [[ ${RV} != 0 ]]; then
-    $LOGGER "ERROR: Unable to associate elastic IP ${ELASTICIP_ID} to instance ${INSTANCE_ID}"
+    $LOGGER "ERROR: Unable to associate elastic IP ${ELASTICIP_ID} to instance ${INSTANCE_ID} (${ENI_ID})"
     exit ${RV}
 else
     # We assume that if return value is not 0 then we have successfully associated an EIP
-    $LOGGER "SUCCESS: Associated ${ELASTICIP_ID} to instance ${INSTANCE_ID}"
+    $LOGGER "SUCCESS: Associated ${ELASTICIP_ID} to instance ${INSTANCE_ID} (${ENI_ID})"
 fi
