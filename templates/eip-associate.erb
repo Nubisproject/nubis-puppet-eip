@@ -30,15 +30,15 @@ ETH_MAC=$(cat /sys/class/net/${EIP_INTERFACE}/address)
 ENI_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/network/interfaces/macs/${ETH_MAC}/interface-id)
 
 # First, check with CloudFormation to see if we can find our IP
-if [[ -z "${ELASTICIP_ID}" ]]; then
 
-    # Is it up yet? Otherwise wait until the stack is done
-    until [ ! -z "${ELASTICIP_ID}" ]; do
-        $LOGGER "Waiting on Elastic IP to be ready"
-        ELASTICIP_ID=$(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $NUBIS_STACK --query "Stacks[].Outputs[?OutputKey=='<%= @cfn_eip_output_key %>'].OutputValue" --output text)
-        sleep 10
-    done
-fi
+# Is it up yet? Otherwise wait until the stack is done
+attempts=0
+until [ ! -z "${ELASTICIP_ID}" ] || [ "${attempts}" -eq 10 ]; do
+    $LOGGER "Waiting on Elastic IP to be ready"
+    ELASTICIP_ID=$(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $NUBIS_STACK --query "Stacks[].Outputs[?OutputKey=='<%= @cfn_eip_output_key %>'].OutputValue" --output text)
+    sleep 10
+    let attempts++
+done
 
 if [[ -z "${INSTANCE_ID}" ]]; then
     $LOGGER "ERROR: Instance ID not found"
