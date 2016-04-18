@@ -1,7 +1,13 @@
 # Change Log
 
-## [v1.0.1](https://github.com/nubisproject/nubis-puppet-eip/tree/v1.0.1) (2015-11-20)
-[Full Changelog](https://github.com/nubisproject/nubis-puppet-eip/compare/v1.0.1...v1.0.1)
+## [v1.1.0](https://github.com/nubisproject/nubis-puppet-eip/tree/v1.1.0) (2016-04-18)
+[Full Changelog](https://github.com/nubisproject/nubis-puppet-eip/compare/v1.0.1...v1.1.0)
+
+**Implemented enhancements:**
+
+- Ability to specify which interface / which IP address we should use to associate EIP to [\#31](https://github.com/nubisproject/nubis-puppet-eip/issues/31)
+- Add timeout for script [\#28](https://github.com/nubisproject/nubis-puppet-eip/issues/28)
+- Cosmetic fixes for puppet module [\#17](https://github.com/nubisproject/nubis-puppet-eip/issues/17)
 
 **Closed issues:**
 
@@ -10,6 +16,8 @@
 
 **Merged pull requests:**
 
+- Added timeout ability, fixes issue \#28 [\#38](https://github.com/nubisproject/nubis-puppet-eip/pull/38) ([limed](https://github.com/limed))
+- Update CHANGELOG for v1.0.1 release [\#36](https://github.com/nubisproject/nubis-puppet-eip/pull/36) ([tinnightcap](https://github.com/tinnightcap))
 - Add ability associate EIP to a specific ENI [\#33](https://github.com/nubisproject/nubis-puppet-eip/pull/33) ([limed](https://github.com/limed))
 - Move eip-associate script to a template and enable ability to name wh… [\#32](https://github.com/nubisproject/nubis-puppet-eip/pull/32) ([limed](https://github.com/limed))
 - Remove dependency on consul [\#29](https://github.com/nubisproject/nubis-puppet-eip/pull/29) ([limed](https://github.com/limed))
@@ -25,6 +33,7 @@
 **Implemented enhancements:**
 
 - Ability to control what EIP output key is [\#30](https://github.com/nubisproject/nubis-puppet-eip/issues/30)
+- Remove dependency on consul [\#20](https://github.com/nubisproject/nubis-puppet-eip/issues/20)
 - Allow ability to give a symlink order [\#18](https://github.com/nubisproject/nubis-puppet-eip/issues/18)
 
 **Fixed bugs:**
@@ -36,7 +45,7 @@
 **Closed issues:**
 
 - Shouldn't always associate at boot [\#9](https://github.com/nubisproject/nubis-puppet-eip/issues/9)
-- Remove dependency on consul [\#20](https://github.com/nubisproject/nubis-puppet-eip/issues/20)
+- Tag v1.0.1 release [\#35](https://github.com/nubisproject/nubis-puppet-eip/issues/35)
 - Tag new release [\#14](https://github.com/nubisproject/nubis-puppet-eip/issues/14)
 
 **Merged pull requests:**
