@@ -13,9 +13,11 @@
 
 - Tag  release [\#34](https://github.com/nubisproject/nubis-puppet-eip/issues/34)
 - metadata.json doesn't set dependencies [\#10](https://github.com/nubisproject/nubis-puppet-eip/issues/10)
+- Tag v1.1.0 release [\#37](https://github.com/nubisproject/nubis-puppet-eip/issues/37)
 
 **Merged pull requests:**
 
+- Update CHANGELOG for v1.1.0 release [\#39](https://github.com/nubisproject/nubis-puppet-eip/pull/39) ([tinnightcap](https://github.com/tinnightcap))
 - Added timeout ability, fixes issue \#28 [\#38](https://github.com/nubisproject/nubis-puppet-eip/pull/38) ([limed](https://github.com/limed))
 - Update CHANGELOG for v1.0.1 release [\#36](https://github.com/nubisproject/nubis-puppet-eip/pull/36) ([tinnightcap](https://github.com/tinnightcap))
 - Add ability associate EIP to a specific ENI [\#33](https://github.com/nubisproject/nubis-puppet-eip/pull/33) ([limed](https://github.com/limed))
