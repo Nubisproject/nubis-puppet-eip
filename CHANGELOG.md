@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.2.0](https://github.com/nubisproject/nubis-puppet-eip/tree/v1.2.0) (2016-07-07)
+[Full Changelog](https://github.com/nubisproject/nubis-puppet-eip/compare/v1.1.0...v1.2.0)
+
+**Closed issues:**
+
+- Tag v1.2.0 release [\#40](https://github.com/nubisproject/nubis-puppet-eip/issues/40)
+
+**Merged pull requests:**
+
+- Update CHANGELOG for v1.2.0 release [\#41](https://github.com/nubisproject/nubis-puppet-eip/pull/41) ([tinnightcap](https://github.com/tinnightcap))
+
 ## [v1.1.0](https://github.com/nubisproject/nubis-puppet-eip/tree/v1.1.0) (2016-04-18)
 [Full Changelog](https://github.com/nubisproject/nubis-puppet-eip/compare/v1.0.1...v1.1.0)
 
