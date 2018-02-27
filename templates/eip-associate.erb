@@ -14,11 +14,11 @@ if [ ! -x $LOGGER_BIN ]; then
     echo "ERROR: 'logger' binary not found - Aborting"
     exit 2
 else
-    LOGGER="$LOGGER_BIN --stderr --priority local7.info --tag ${BASH_SOURCE}"
+    LOGGER="$LOGGER_BIN --stderr --priority local7.info --tag ${BASH_SOURCE[0]}"
 fi
 
 # Source the consul connection details from the metadata api
-eval `curl -s -fq http://169.254.169.254/latest/user-data`
+eval "$(curl -s -fq http://169.254.169.254/latest/user-data)"
 
 # Setup variables
 INSTANCE_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/instance-id)
@@ -26,8 +26,8 @@ EC2_REGION=$(curl -s -fq http://169.254.169.254/latest/dynamic/instance-identity
 
 # Network info
 EIP_INTERFACE="<%= @eip_interface %>"
-ETH_MAC=$(cat /sys/class/net/${EIP_INTERFACE}/address)
-ENI_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/network/interfaces/macs/${ETH_MAC}/interface-id)
+ETH_MAC="$(cat "/sys/class/net/${EIP_INTERFACE}/address")"
+ENI_ID="$(curl -s -fq "http://169.254.169.254/latest/meta-data/network/interfaces/macs/${ETH_MAC}/interface-id")"
 
 # First, check with CloudFormation to see if we can find our IP
 
@@ -35,9 +35,9 @@ ENI_ID=$(curl -s -fq http://169.254.169.254/latest/meta-data/network/interfaces/
 attempts=0
 until [ ! -z "${ELASTICIP_ID}" ] || [ "${attempts}" -eq 10 ]; do
     $LOGGER "Waiting on Elastic IP to be ready"
-    ELASTICIP_ID=$(aws --region $EC2_REGION cloudformation describe-stacks --stack-name $NUBIS_STACK --query "Stacks[].Outputs[?OutputKey=='<%= @cfn_eip_output_key %>'].OutputValue" --output text)
+    ELASTICIP_ID="$(aws --region "$EC2_REGION" cloudformation describe-stacks --stack-name "$NUBIS_STACK" --query "Stacks[].Outputs[?OutputKey=='<%= @cfn_eip_output_key %>'].OutputValue" --output text)"
     sleep 10
-    let attempts++
+    attempts=$((attempts +1 ))
 done
 
 if [[ -z "${INSTANCE_ID}" ]]; then
@@ -45,7 +45,7 @@ if [[ -z "${INSTANCE_ID}" ]]; then
     exit 1
 fi
 
-aws ec2 associate-address --network-interface-id ${ENI_ID} --allocation-id ${ELASTICIP_ID} --region ${EC2_REGION}
+aws ec2 associate-address --network-interface-id "${ENI_ID}" --allocation-id "${ELASTICIP_ID}" --region "${EC2_REGION}"
 RV=$?
 
 if [[ ${RV} != 0 ]]; then
